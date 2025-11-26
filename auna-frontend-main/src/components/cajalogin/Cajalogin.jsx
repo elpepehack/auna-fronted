@@ -45,6 +45,8 @@ export const Cajalogin = () => {
           <div className="login-box">
             <h2>INGRESA</h2>
             <form onSubmit={handleSubmit}>
+              
+              {/* Número de documento */}
               <div className="input-group mb-4">
                 <span className="input-group-text">
                   <i className="fas fa-user"></i>
@@ -54,11 +56,27 @@ export const Cajalogin = () => {
                   className="form-control"
                   placeholder="Número de documento"
                   value={numDocumento}
-                  onChange={(e) => setNumDocumento(e.target.value)}
+                  onChange={(e) => {
+                    let value = e.target.value;
+
+                    // Solo números
+                    if (!/^\d*$/.test(value)) {
+                      alert("Solo se permiten números en el número de documento.");
+                      return;
+                    }
+
+                    // Máximo 12 dígitos como solicitaste
+                    if (value.length > 12) {
+                      return;
+                    }
+
+                    setNumDocumento(value);
+                  }}
                   required
                 />
               </div>
 
+              {/* Contraseña */}
               <div className="input-group mb-4">
                 <span className="input-group-text">
                   <i className="fas fa-lock"></i>

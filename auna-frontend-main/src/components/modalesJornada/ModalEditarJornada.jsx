@@ -1,19 +1,28 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import medicoService from '../../services/medicoService';
 
 export const ModalEditarJornada = ({ show, onClose, onUpdate, jornadaActual }) => {
-    const [jornada, setJornada] = useState(jornadaActual);
+
+    const jornadaInicial = {
+        idJornadaMedicos: jornadaActual?.idJornadaMedicos || "",
+        medico: {
+            idMedico: jornadaActual?.medico?.idMedico || ""
+        },
+        diaSemana: jornadaActual?.diaSemana || ""
+    };
+
+    const [jornada, setJornada] = useState(jornadaInicial);
     const [medicos, setMedicos] = useState([]);
 
     useEffect(() => {
-        if (jornadaActual) {
-            setJornada({
-                ...jornadaActual,
-                medico: { idMedico: jornadaActual.medico?.idMedico || '' }
-            });
-        }
+        setJornada({
+            idJornadaMedicos: jornadaActual?.idJornadaMedicos || "",
+            medico: {
+                idMedico: jornadaActual?.medico?.idMedico || ""
+            },
+            diaSemana: jornadaActual?.diaSemana || ""
+        });
     }, [jornadaActual]);
-
 
     useEffect(() => {
         medicoService.getAllMedicos()
@@ -24,19 +33,23 @@ export const ModalEditarJornada = ({ show, onClose, onUpdate, jornadaActual }) =
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        if (name === 'medico') {
+        if (name === "medico") {
             setJornada(prev => ({
                 ...prev,
                 medico: { idMedico: value }
             }));
         } else {
-            setJornada(prev => ({ ...prev, [name]: value }));
+            setJornada(prev => ({
+                ...prev,
+                [name]: value
+            }));
         }
     };
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Enviamos el ID y los datos actualizados
         onUpdate(jornada.idJornadaMedicos, jornada);
     };
 
@@ -46,6 +59,7 @@ export const ModalEditarJornada = ({ show, onClose, onUpdate, jornadaActual }) =
         <div className="modal-overlay">
             <div className="modal-dialog">
                 <div className="modal-content">
+
                     <div className="modal-header">
                         <h5 className="modal-title">Editar Jornada</h5>
                         <button
@@ -57,7 +71,8 @@ export const ModalEditarJornada = ({ show, onClose, onUpdate, jornadaActual }) =
 
                     <div className="modal-body">
                         <form onSubmit={handleSubmit}>
-                            {/* Médico */}
+
+                            {/* MÉDICO */}
                             <div className="modal-formGroup">
                                 <label className="modal-label">Médico</label>
                                 <select
@@ -68,6 +83,7 @@ export const ModalEditarJornada = ({ show, onClose, onUpdate, jornadaActual }) =
                                     required
                                 >
                                     <option value="" disabled hidden>Seleccione un médico</option>
+
                                     {medicos.map(medico => (
                                         <option key={medico.idMedico} value={medico.idMedico}>
                                             {medico.nombreMedico}
@@ -76,7 +92,7 @@ export const ModalEditarJornada = ({ show, onClose, onUpdate, jornadaActual }) =
                                 </select>
                             </div>
 
-                            {/* Día de la semana */}
+                            {/* DÍA DE LA SEMANA */}
                             <div className="modal-formGroup">
                                 <label className="modal-label">Día de la semana</label>
                                 <select
@@ -112,12 +128,14 @@ export const ModalEditarJornada = ({ show, onClose, onUpdate, jornadaActual }) =
                                     GUARDAR CAMBIOS
                                 </button>
                             </div>
+
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default ModalEditarJornada;

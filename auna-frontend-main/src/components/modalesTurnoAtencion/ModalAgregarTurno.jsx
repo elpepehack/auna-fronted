@@ -19,14 +19,21 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
     const [medicos, setMedicos] = useState([]);
     const [detallesSede, setDetallesSede] = useState([]);
     const [especialidadSeleccionada, setEspecialidadSeleccionada] = useState('');
-
     const [jornadasMedico, setJornadasMedico] = useState([]);
     const [diasPermitidos, setDiasPermitidos] = useState([]);
+
+    // ERRORES
+    const [errorDetalleSede, setErrorDetalleSede] = useState("");
+    const [errorMedico, setErrorMedico] = useState("");
+    const [errorFecha, setErrorFecha] = useState("");
+    const [errorHoraInicio, setErrorHoraInicio] = useState("");
+    const [errorHoraFin, setErrorHoraFin] = useState("");
+    const [errorCupos, setErrorCupos] = useState("");
 
     useEffect(() => {
         medicoService.getAllMedicos()
             .then(response => setMedicos(response.data))
-            .catch(error => console.log(error))
+            .catch(error => console.log(error));
         detalleSedeService.getAllDetalleSedes()
             .then(response => setDetallesSede(response.data))
             .catch(error => console.log(error));
@@ -44,11 +51,10 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                 medico: { idMedico: value },
                 fecha: null
             }));
-
+            setErrorMedico(""); // limpiar error
             if (value) {
                 const jornadasFiltradas = jornadasMedico.filter(j => j.medico.idMedico === parseInt(value));
                 const dias = jornadasFiltradas.map(j => j.diaSemana);
-
                 const diasNumeros = dias.map(d => {
                     switch (d) {
                         case 'LUNES': return 1;
@@ -72,27 +78,65 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
             setTurno(prev => ({
                 ...prev,
                 detalleSede: { idDetalleSede: value },
-                medico: { idMedico: '' }, // ✅ limpiar médico
-                fecha: null                // ✅ opcional limpiar fecha
+                medico: { idMedico: '' },
+                fecha: null
             }));
-            setDiasPermitidos([]); // opcional
+            setDiasPermitidos([]);
+            setErrorDetalleSede(""); // limpiar error
         } else {
             setTurno(prev => ({ ...prev, [name]: value }));
+            if (name === "horaInicio") setErrorHoraInicio("");
+            if (name === "horaFin") setErrorHoraFin("");
+            if (name === "numCupos") setErrorCupos("");
         }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // ✅ Validar cupos vs duración
-        const [hInicio, mInicio] = turno.horaInicio.split(':').map(Number);
-        const [hFin, mFin] = turno.horaFin.split(':').map(Number);
-        const duracionHoras = (hFin + mFin / 60) - (hInicio + mInicio / 60);
+        let valido = true;
 
-        if (duracionHoras < turno.numCupos) {
-            alert(`No puede asignar ${turno.numCupos} cupos en un rango de ${duracionHoras.toFixed(1)} horas. Cada cita ocupa 1 hora.`);
-            return;
+        if (!turno.detalleSede.idDetalleSede) {
+            setErrorDetalleSede("Debe seleccionar un detalle de sede");
+            valido = false;
         }
+
+        if (!turno.medico.idMedico) {
+            setErrorMedico("Debe seleccionar un médico");
+            valido = false;
+        }
+
+        if (!turno.fecha) {
+            setErrorFecha("Debe seleccionar una fecha");
+            valido = false;
+        }
+
+        if (!turno.horaInicio) {
+            setErrorHoraInicio("Debe ingresar hora de inicio");
+            valido = false;
+        }
+
+        if (!turno.horaFin) {
+            setErrorHoraFin("Debe ingresar hora de fin");
+            valido = false;
+        }
+
+        if (!turno.numCupos || turno.numCupos <= 0) {
+            setErrorCupos("Debe ingresar un número válido de cupos");
+            valido = false;
+        }
+
+        if (turno.horaInicio && turno.horaFin && turno.numCupos > 0) {
+            const [hInicio, mInicio] = turno.horaInicio.split(':').map(Number);
+            const [hFin, mFin] = turno.horaFin.split(':').map(Number);
+            const duracionHoras = (hFin + mFin / 60) - (hInicio + mInicio / 60);
+            if (duracionHoras < turno.numCupos) {
+                setErrorCupos(`No puede asignar ${turno.numCupos} cupos en ${duracionHoras.toFixed(1)} horas. Cada cita ocupa 1 hora.`);
+                valido = false;
+            }
+        }
+
+        if (!valido) return;
 
         const turnoParaEnviar = {
             ...turno,
@@ -102,6 +146,7 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
         onSave(turnoParaEnviar);
         setTurno(turnoInicial);
         setEspecialidadSeleccionada('');
+        setDiasPermitidos([]);
     };
 
     if (!show) return null;
@@ -126,7 +171,6 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                                             name="idDetalleSede"
                                             value={turno.detalleSede.idDetalleSede}
                                             onChange={handleChange}
-                                            required
                                         >
                                             <option value="" disabled hidden>Seleccione detalle de sede</option>
                                             {detallesSede.map(det => (
@@ -135,6 +179,11 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                                                 </option>
                                             ))}
                                         </select>
+                                        {errorDetalleSede && (
+                                            <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                                {errorDetalleSede}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -147,7 +196,6 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                                             value={turno.medico.idMedico}
                                             onChange={handleChange}
                                             disabled={!especialidadSeleccionada}
-                                            required
                                         >
                                             <option value="" disabled hidden>Seleccione un médico</option>
                                             {medicos
@@ -158,6 +206,11 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                                                     </option>
                                                 ))}
                                         </select>
+                                        {errorMedico && (
+                                            <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                                {errorMedico}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -168,14 +221,18 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                                         <label className="modal-label">Fecha</label>
                                         <DatePicker
                                             selected={turno.fecha}
-                                            onChange={(date) => setTurno(prev => ({ ...prev, fecha: date }))}
+                                            onChange={(date) => { setTurno(prev => ({ ...prev, fecha: date })); setErrorFecha(""); }}
                                             className="modal-input"
                                             dateFormat="dd/MM/yyyy"
                                             placeholderText="Seleccione fecha"
                                             minDate={new Date()}
                                             filterDate={(date) => diasPermitidos.includes(date.getDay())}
-                                            required
                                         />
+                                        {errorFecha && (
+                                            <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                                {errorFecha}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="modal-col">
@@ -188,8 +245,12 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                                             value={turno.numCupos}
                                             onChange={handleChange}
                                             min="1"
-                                            required
                                         />
+                                        {errorCupos && (
+                                            <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                                {errorCupos}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -204,8 +265,12 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                                             name="horaInicio"
                                             value={turno.horaInicio}
                                             onChange={handleChange}
-                                            required
                                         />
+                                        {errorHoraInicio && (
+                                            <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                                {errorHoraInicio}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="modal-col">
@@ -217,8 +282,12 @@ const ModalAgregarTurno = ({ show, onClose, onSave }) => {
                                             name="horaFin"
                                             value={turno.horaFin}
                                             onChange={handleChange}
-                                            required
                                         />
+                                        {errorHoraFin && (
+                                            <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                                {errorHoraFin}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>

@@ -12,6 +12,10 @@ const ModalAgregarJornada = ({ show, onClose, onSave }) => {
     const [jornada, setJornada] = useState(jornadaInicial);
     const [medicos, setMedicos] = useState([]);
 
+    // ERRORES
+    const [errorMedico, setErrorMedico] = useState("");
+    const [errorDia, setErrorDia] = useState("");
+
     useEffect(() => {
         medicoService.getAllMedicos()
             .then(response => setMedicos(response.data))
@@ -26,13 +30,30 @@ const ModalAgregarJornada = ({ show, onClose, onSave }) => {
                 ...prev,
                 medico: { idMedico: value }
             }));
+            setErrorMedico(""); // Limpiar error al seleccionar
         } else {
             setJornada(prev => ({ ...prev, [name]: value }));
+            setErrorDia(""); // Limpiar error al seleccionar día
         }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        let valido = true;
+
+        if (!jornada.medico.idMedico) {
+            setErrorMedico("Debe seleccionar un médico");
+            valido = false;
+        }
+
+        if (!jornada.diaSemana) {
+            setErrorDia("Debe seleccionar un día de la semana");
+            valido = false;
+        }
+
+        if (!valido) return;
+
         onSave(jornada);
         setJornada(jornadaInicial);
     };
@@ -62,7 +83,6 @@ const ModalAgregarJornada = ({ show, onClose, onSave }) => {
                                     name="medico"
                                     value={jornada.medico.idMedico}
                                     onChange={handleChange}
-                                    required
                                 >
                                     <option value="" disabled hidden>Seleccione un médico</option>
                                     {medicos.map(medico => (
@@ -71,6 +91,11 @@ const ModalAgregarJornada = ({ show, onClose, onSave }) => {
                                         </option>
                                     ))}
                                 </select>
+                                {errorMedico && (
+                                    <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                        {errorMedico}
+                                    </p>
+                                )}
                             </div>
 
                             {/* Día de la semana */}
@@ -81,7 +106,6 @@ const ModalAgregarJornada = ({ show, onClose, onSave }) => {
                                     name="diaSemana"
                                     value={jornada.diaSemana}
                                     onChange={handleChange}
-                                    required
                                 >
                                     <option value="" disabled hidden>Seleccione un día</option>
                                     <option value="LUNES">Lunes</option>
@@ -92,6 +116,11 @@ const ModalAgregarJornada = ({ show, onClose, onSave }) => {
                                     <option value="SABADO">Sábado</option>
                                     <option value="DOMINGO">Domingo</option>
                                 </select>
+                                {errorDia && (
+                                    <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                        {errorDia}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="modal-footer">
