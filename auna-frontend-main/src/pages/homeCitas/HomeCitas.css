@@ -1,0 +1,59 @@
+.HomeCitas-container {
+  /*background-color: #ffffff;*/
+  max-width: 1200px; /* Limita el ancho máximo */
+  margin: 2rem auto; /* Centra el contenedor y agrega espacio arriba/abajo */
+  padding: 0 1rem; /* Padding lateral para móviles */
+}
+
+.HomeCitas-header {
+  background-color: #1a49d6;
+  color: white;
+  font-weight: bold;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 30px;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+}
+
+.HomeCitas-search-bar {
+  border: none;
+  border-bottom: 2px solid #1a49d6;
+  outline: none;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 3rem;
+  text-align: center;
+  padding: 0.75rem 1rem;
+}
+
+.HomeCitas-card-custom {
+  background-color: #1a49d6;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  height: 100%;
+  transition: transform 0.2s ease-in-out;
+  margin-bottom: 1.5rem;
+}
+
+.HomeCitas-card-custom:hover {
+  transform: scale(1.03);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Sombra al hover */
+}
+
+/* Media queries para responsividad */
+@media (max-width: 768px) {
+  .HomeCitas-container {
+    padding: 0 0.5rem;
+  }
+  
+  .HomeCitas-header {
+    padding: 1rem;
+    font-size: 1.2rem;
+  }
+  
+  .HomeCitas-card-custom {
+    padding: 1rem;
+  }
+}

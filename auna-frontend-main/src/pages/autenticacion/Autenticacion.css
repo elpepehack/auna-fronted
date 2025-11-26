@@ -1,0 +1,8 @@
+.body-essalud {
+    background: linear-gradient(to bottom right, #1000c0, #3ca6d2);
+    color: white;
+    min-height: 100vh;
+    font-family: 'Marmelad', Arial, sans-serif;
+    overflow-x: hidden;
+    padding-bottom: 3rem;
+}

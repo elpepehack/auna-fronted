@@ -1,0 +1,107 @@
+.sidebar {
+  background-color: #003366;
+  position: fixed;
+  width: 250px;
+  height: 100vh; /* Ocupa toda la altura visible */
+  overflow-y: auto; /* Permite scroll interno si el contenido es muy largo */
+  z-index: 1000;
+  transition: all 0.5s;
+}
+
+.sidebar.collapsed {
+  width: 80px;
+}
+
+.sidebar .nav-link {
+  color: #dee2e6;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-left: 4px solid #4eacff;
+}
+
+.sidebar .sidebar-header {
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #495057;
+}
+
+.sidebar.collapsed .sidebar-text {
+  display: none;
+}
+
+.sidebar.collapsed .nav-link {
+  justify-content: center;
+}
+
+.sidebar .bi {
+  font-size: 1.2rem;
+}
+
+/* Evita que el contenido principal se desborde */
+.main-content {
+  margin-left: 250px;
+  width: calc(100% - 250px); /* Asegura que el ancho no exceda la pantalla */
+  overflow-x: hidden; /* Previene scroll horizontal */
+}
+
+/* Sidebar colapsado en móviles por defecto */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%); /* Oculta completamente */
+  }
+  .sidebar.collapsed {
+    transform: translateX(0); /* Muestra solo íconos */
+  }
+  .sidebar:not(.collapsed) {
+    width: 80%; /* Muestra completo al expandir */
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  .sidebar:not(.collapsed) + .main-content {
+    margin-left: 80%; /* Empuja el contenido al abrir el sidebar */
+    width: 20%; /* Restringe el ancho del contenido */
+    overflow: hidden; /* Evita que el contenido se muestre mal */
+  }
+}
+
+/* Botón Salir - Estilo Principal */
+.logout .btn-outline-danger {
+  color: #fff;
+  background-color: #dc3545; /* Rojo sólido (en lugar de outline) */
+  border: 2px solid #dc3545;
+  border-radius: 6px;
+  padding: 10px 0;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* Espacio entre ícono y texto */
+}
+
+/* Efecto Hover */
+.logout .btn-outline-danger:hover {
+  background-color: #c82333; /* Rojo más oscuro */
+  transform: translateY(-2px); /* Levanta ligeramente */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Efecto al hacer clic */
+.logout .btn-outline-danger:active {
+  transform: translateY(0); /* Vuelve a posición original */
+  box-shadow: none;
+}
+
+

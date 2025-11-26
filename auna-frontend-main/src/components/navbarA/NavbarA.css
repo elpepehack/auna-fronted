@@ -1,0 +1,11 @@
+.btn-outline-light {
+    border-radius: 30px;
+    padding: 8px 20px;
+    font-weight: bold;
+}
+
+.logo-auna {
+    width: 200px;   /* Ajusta el ancho */
+    height: auto;   /* Mantiene la proporción */
+    display: block;
+}

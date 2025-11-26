@@ -1,0 +1,10 @@
+.citas-header-box {
+    background-color: #ffffff; /* Fondo blanco */
+    color: #221414; /* Texto negro para contraste */
+    padding: 15px 30px; /* Espacio interno */
+    border-radius: 8px; /* Esquinas ligeramente redondeadas */
+    max-width: 350px; /* Limita el ancho para que parezca una caja */
+    margin-left: auto; /* Centra la caja horizontalmente */
+    margin-right: auto; /* Centra la caja horizontalmente */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra sutil para que se destaque */
+}

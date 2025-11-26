@@ -1,0 +1,45 @@
+.family-img {
+  max-width: 90%;
+  height: auto;
+}
+
+.title {
+  letter-spacing: 4px;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.responsive-text {
+  font-size: 1.2rem;
+}
+
+/* MEDIA QUERIES */
+@media (min-width: 768px) {
+  .title {
+    font-size: 4rem;
+    letter-spacing: 8px;
+  }
+
+  .family-img {
+    max-width: 600px;
+  }
+
+  .responsive-text {
+    font-size: 1.4rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .title {
+    font-size: 6rem;
+    letter-spacing: 12px;
+  }
+
+  .family-img {
+    margin-top: 80px;
+  }
+
+  .responsive-text {
+    font-size: 1.6rem;
+  }
+}

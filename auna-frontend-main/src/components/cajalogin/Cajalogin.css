@@ -1,0 +1,100 @@
+.family-img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 30px;
+}
+
+.login-box {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 420px;
+  margin: 30px auto;
+  text-align: center;
+  z-index: 1;
+}
+
+.login-box input::placeholder {
+  color: #ccc8c8;
+}
+
+.login-box h2 {
+  margin-bottom: 25px;
+  font-size: 24px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: #1c1cf0;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.login-box button:hover {
+  background: #1515b6;
+}
+
+.login-box a {
+  display: block;
+  margin-top: 15px;
+  color: #ffffffb7;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.login-box a:hover {
+  text-decoration: underline;
+}
+
+/* Estilos para los inputs con iconos */
+.input-group-text {
+  border: none;
+  border-bottom: 2px solid white !important;
+  background: transparent !important;
+  color: white !important;
+  padding-right: 5px;
+}
+
+.form-control {
+  border-bottom: 2px solid white !important;
+  box-shadow: none !important;
+  background: transparent;
+  color: white;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  padding-left: 10px;
+}
+
+.form-control:focus {
+  background: transparent !important;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .login-box {
+    padding: 30px 20px;
+    margin: 20px auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-box {
+    padding: 25px 15px;
+    max-width: 90%;
+  }
+
+  .login-box h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+}

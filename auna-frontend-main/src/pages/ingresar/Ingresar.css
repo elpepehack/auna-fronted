@@ -1,0 +1,8 @@
+.body-style {
+  background: linear-gradient(to bottom right, #1000c0, #3ca6d2);
+  color: white;
+  min-height: 100vh;
+  font-family: 'Marmelad', Arial, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}

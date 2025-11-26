@@ -1,0 +1,84 @@
+/* Home.css */
+
+/* ... (código existente) ... */
+
+/* Estilo para alto contraste (Texto Blanco sobre Fondo Negro) */
+.dark-mode-text {
+    color: #f8f9fa !important; /* Se mantiene solo el color de texto blanco */
+    /* ¡IMPORTANTE!: Asegúrate de que no haya aquí un font-size para que sea independiente */
+}
+
+/* Opcional: Asegúrate de que los encabezados se vean */
+.dark-mode-text h1, .dark-mode-text h2, .dark-mode-text h3 {
+    color: #ffffff !important;
+}
+
+/* 🔥 CLASE INDEPENDIENTE: Aumento de fuente - Máximo Tamaño */
+.large-font {
+    font-size: 1.5rem !important; /* Aumento a 1.5 veces el tamaño base */
+}
+
+/* Para asegurar que los elementos de texto dentro del main-content también se beneficien */
+.large-font p, .large-font span, .large-font strong, .large-font li, .large-font a {
+    font-size: 1.5rem !important;
+}
+
+/* Nota: Para que el texto dentro de HomeCitas se vea en modo oscuro, HomeCitas.css 
+   debe seguir sin tener 'background-color: #ffffff;' en .HomeCitas-container. */
+
+.home-body {
+    font-family: 'Marmelad', Arial, sans-serif;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 250px; /* Igual al ancho del sidebar */
+  transition: margin-left 0.3s ease;
+  font-family: 'Lekton', sans-serif;
+}
+
+.content-wrapper {
+  padding: 20px;
+}
+
+/* Cuando el sidebar está colapsado */
+.sidebar.collapsed + .main-content {
+  margin-left: 80px; /* Igual al ancho del sidebar colapsado */
+}
+
+/* Asegura que el navbar no se solape con el sidebar */
+.navbarH-container {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999; /* Debajo del sidebar pero encima del contenido */
+}
+
+/* Estilos responsivos (opcional) */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 80px;
+  }
+  .sidebar:not(.collapsed) + .main-content {
+    margin-left: 250px;
+  }
+
+  .sidebar:not(.collapsed) ~ .sidebar-overlay {
+    display: block;
+  }
+}

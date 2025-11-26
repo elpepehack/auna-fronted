@@ -1,0 +1,49 @@
+.navbarH-container {
+  display: flex;
+  height: 70px;
+}
+
+.navbarH-logo-section {
+  background-color: #4a61d1;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 3.35rem;
+}
+
+.navbarH-logo-section img {
+  height: 35px;
+  margin-right: 10px;
+}
+
+.navbarH-paciente-section {
+  background-color: #2e47c9;
+  color: white;
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.navbarH-paciente-text {
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+  font-weight: 500;
+}
+
+/* Ajustes para móviles */
+@media (max-width: 768px) {
+  .navbarH-container {
+    flex-direction: column;
+    height: auto;
+  }
+  .navbarH-logo-section {
+    padding: 0.5rem;
+    justify-content: center;
+  }
+  .navbarH-paciente-section {
+    justify-content: flex-start;
+    padding: 0.5rem 1rem;
+  }
+}
