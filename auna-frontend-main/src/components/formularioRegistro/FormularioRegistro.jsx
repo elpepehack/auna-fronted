@@ -19,14 +19,33 @@ const FormularioRegistro = () => {
 
   const manejarCambio = (e) => {
     const { name, value, type, checked } = e.target;
+    let nuevoValor = type === "checkbox" ? checked : value;
+
+    // Solo letras y espacios para nombre y apellido
+    if (name === "nombre" || name === "apellido") {
+      nuevoValor = value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, "");
+    }
+
+    // Limitar numDocumento según tipo
+    if (name === "numDocumento") {
+      if (formulario.tipoDocumento === "DNI") nuevoValor = value.replace(/\D/g, "").slice(0, 8);
+      if (formulario.tipoDocumento === "CE") nuevoValor = value.replace(/\D/g, "").slice(0, 12);
+    }
+
+    // Limitar número de celular a 9 dígitos
+    if (name === "numeroCelular") {
+      nuevoValor = value.replace(/\D/g, "").slice(0, 9);
+    }
+
     setFormulario({
       ...formulario,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: nuevoValor,
     });
+
     if (mostrarErrores) {
       setErrores({
         ...errores,
-        [name]: validarCampo(name, type === "checkbox" ? checked : value),
+        [name]: validarCampo(name, nuevoValor),
       });
     }
   };
@@ -35,20 +54,22 @@ const FormularioRegistro = () => {
     switch (nombre) {
       case "nombre":
       case "apellido":
-        return !valor ? "Obligatorio" : "";
+        if (!valor) return "Obligatorio";
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(valor)) return "Solo se permite letras";
+        return "";
       case "tipoDocumento":
         return !valor ? "Selecciona tipo" : "";
       case "numDocumento":
-        return !/^\d{8,12}$/.test(valor) ? "8-12 dígitos" : "";
+        if (formulario.tipoDocumento === "DNI" && valor.length !== 8) return "DNI debe tener 8 dígitos";
+        if (formulario.tipoDocumento === "CE" && valor.length !== 12) return "CE debe tener 12 dígitos";
+        return "";
       case "correoElectronico":
-        return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)
-          ? "Correo inválido"
-          : "";
+        return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor) ? "Correo inválido" : "";
       case "numeroCelular":
-        return !/^\d{9}$/.test(valor) ? "9 dígitos" : "";
+        return valor.length !== 9 ? "Número de celular debe tener 9 dígitos" : "";
       case "contrasena":
         return !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(valor)
-          ? "8c, 1M, 1m, 1d"
+          ? "Mínimo 8 caracteres, 1 mayúscula, 1 minúscula y 1 número"
           : "";
       case "terminos":
         return !valor ? "Requerido" : "";
@@ -77,6 +98,8 @@ const FormularioRegistro = () => {
           navigate("/ingresar");
         })
         .catch(() => alert("Error al registrarte."));
+    } else {
+      alert("Corrige los errores antes de registrarte.");
     }
   };
 
@@ -88,8 +111,7 @@ const FormularioRegistro = () => {
             type="text"
             name="nombre"
             placeholder="Nombre"
-            className={`form-control-registro form-control-sm ${errores.nombre && mostrarErrores ? "is-invalid" : ""
-              }`}
+            className={`form-control-registro form-control-sm ${errores.nombre && mostrarErrores ? "is-invalid" : ""}`}
             value={formulario.nombre}
             onChange={manejarCambio}
           />
@@ -102,8 +124,7 @@ const FormularioRegistro = () => {
             type="text"
             name="apellido"
             placeholder="Apellido"
-            className={`form-control-registro form-control-sm ${errores.apellido && mostrarErrores ? "is-invalid" : ""
-              }`}
+            className={`form-control-registro form-control-sm ${errores.apellido && mostrarErrores ? "is-invalid" : ""}`}
             value={formulario.apellido}
             onChange={manejarCambio}
           />
@@ -117,8 +138,7 @@ const FormularioRegistro = () => {
         <div className="col-4">
           <select
             name="tipoDocumento"
-            className={`form-select form-select-sm ${errores.tipoDocumento && mostrarErrores ? "is-invalid" : ""
-              }`}
+            className={`form-select form-select-sm ${errores.tipoDocumento && mostrarErrores ? "is-invalid" : ""}`}
             value={formulario.tipoDocumento}
             onChange={manejarCambio}
           >
@@ -135,8 +155,7 @@ const FormularioRegistro = () => {
             type="text"
             name="numDocumento"
             placeholder="Nro Documento"
-            className={`form-control-registro form-control-sm ${errores.numDocumento && mostrarErrores ? "is-invalid" : ""
-              }`}
+            className={`form-control-registro form-control-sm ${errores.numDocumento && mostrarErrores ? "is-invalid" : ""}`}
             value={formulario.numDocumento}
             onChange={manejarCambio}
           />
@@ -151,8 +170,7 @@ const FormularioRegistro = () => {
           type="email"
           name="correoElectronico"
           placeholder="Correo electrónico"
-          className={`form-control-registro form-control-sm ${errores.correoElectronico && mostrarErrores ? "is-invalid" : ""
-            }`}
+          className={`form-control-registro form-control-sm ${errores.correoElectronico && mostrarErrores ? "is-invalid" : ""}`}
           value={formulario.correoElectronico}
           onChange={manejarCambio}
         />
@@ -166,8 +184,7 @@ const FormularioRegistro = () => {
           type="tel"
           name="numeroCelular"
           placeholder="Teléfono"
-          className={`form-control-registro form-control-sm ${errores.numeroCelular && mostrarErrores ? "is-invalid" : ""
-            }`}
+          className={`form-control-registro form-control-sm ${errores.numeroCelular && mostrarErrores ? "is-invalid" : ""}`}
           value={formulario.numeroCelular}
           onChange={manejarCambio}
         />
@@ -181,8 +198,7 @@ const FormularioRegistro = () => {
           type="password"
           name="contrasena"
           placeholder="Contraseña"
-          className={`form-control-registro form-control-sm ${errores.contrasena && mostrarErrores ? "is-invalid" : ""
-            }`}
+          className={`form-control-registro form-control-sm ${errores.contrasena && mostrarErrores ? "is-invalid" : ""}`}
           value={formulario.contrasena}
           onChange={manejarCambio}
         />
@@ -207,7 +223,6 @@ const FormularioRegistro = () => {
           <div className="invalid-feedback d-block">{errores.terminos}</div>
         )}
       </div>
-
 
       <button type="submit" className="btn btn-submit btn-sm w-100">
         REGISTRARSE

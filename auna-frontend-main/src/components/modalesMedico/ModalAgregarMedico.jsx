@@ -12,6 +12,9 @@ const ModalAgregarMedico = ({ show, onClose, onSave }) => {
     const [medico, setMedico] = useState(medicoInicial);
     const [especialidades, setEspecialidades] = useState([]);
 
+    const [errorNombre, setErrorNombre] = useState("");
+    const [errorEspecialidad, setErrorEspecialidad] = useState("");
+
     useEffect(() => {
         especialidadService.getAllEspecialidades()
             .then(response => setEspecialidades(response.data))
@@ -21,11 +24,26 @@ const ModalAgregarMedico = ({ show, onClose, onSave }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
 
+        // BLOQUEAR NÚMEROS: Solo letras
+        if (name === "nombreMedico") {
+            const soloLetras = value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, "");
+
+            setMedico(prev => ({
+                ...prev,
+                nombreMedico: soloLetras
+            }));
+
+            setErrorNombre("");
+            return;
+        }
+
+        // Especialidad
         if (name === 'especialidad') {
             setMedico(prev => ({
                 ...prev,
                 especialidad: { idEspecialidad: value }
             }));
+            setErrorEspecialidad("");
         } else {
             setMedico(prev => ({
                 ...prev,
@@ -36,6 +54,23 @@ const ModalAgregarMedico = ({ show, onClose, onSave }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        let valido = true;
+
+        // Validación nombre
+        if (medico.nombreMedico.trim() === "") {
+            setErrorNombre("El nombre del médico es obligatorio");
+            valido = false;
+        }
+
+        // Validación especialidad
+        if (medico.especialidad.idEspecialidad === "") {
+            setErrorEspecialidad("Debe seleccionar una especialidad");
+            valido = false;
+        }
+
+        if (!valido) return;
+
         onSave(medico);
         setMedico(medicoInicial);
     };
@@ -48,11 +83,7 @@ const ModalAgregarMedico = ({ show, onClose, onSave }) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">Registro</h5>
-                        <button
-                            type="button"
-                            className="modal-closeBtn"
-                            onClick={onClose}
-                        ></button>
+                        <button type="button" className="modal-closeBtn" onClick={onClose}></button>
                     </div>
 
                     <div className="modal-body">
@@ -68,8 +99,14 @@ const ModalAgregarMedico = ({ show, onClose, onSave }) => {
                                             name="nombreMedico"
                                             value={medico.nombreMedico}
                                             onChange={handleChange}
-                                            required
                                         />
+
+                                        {/*  Error nombre */}
+                                        {errorNombre && (
+                                            <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                                {errorNombre}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -81,7 +118,6 @@ const ModalAgregarMedico = ({ show, onClose, onSave }) => {
                                             name="especialidad"
                                             value={medico.especialidad.idEspecialidad}
                                             onChange={handleChange}
-                                            required
                                         >
                                             <option value="" disabled hidden>Seleccione una especialidad</option>
                                             {especialidades.map(especialidad => (
@@ -90,12 +126,23 @@ const ModalAgregarMedico = ({ show, onClose, onSave }) => {
                                                 </option>
                                             ))}
                                         </select>
+
+                                        {/* Error especialidad */}
+                                        {errorEspecialidad && (
+                                            <p style={{ color: "red", marginTop: "5px", fontSize: "14px" }}>
+                                                {errorEspecialidad}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
 
                             <div className="modal-footer">
-                                <button type="button" className="modal-btn modal-btnSecondary" onClick={onClose}>
+                                <button
+                                    type="button"
+                                    className="modal-btn modal-btnSecondary"
+                                    onClick={onClose}
+                                >
                                     CANCELAR
                                 </button>
                                 <button type="submit" className="modal-btn modal-btnPrimary">
@@ -111,3 +158,4 @@ const ModalAgregarMedico = ({ show, onClose, onSave }) => {
 };
 
 export default ModalAgregarMedico;
+ 
